@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muhammad Fahizudin — UI/UX Designer</title>
+<meta name="description" content="UI/UX Designer building clarity into complex B2B accounting systems at Financio/ABSS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181F;
+    --paper:#F7F8F6;
+    --paper-dim:#EDEFEC;
+    --teal:#1B8577;
+    --teal-dim:#E4F1EE;
+    --slate:#5B6470;
+    --line:#DADDD8;
+    --black:#0B0B0C;
+    --gold:#C9A227;
+    --gold-dim:#3A2F12;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+  }
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+    letter-spacing:0.02em;
+  }
+  a{color:inherit;}
+  img{max-width:100%; display:block;}
+
+  /* ---------- Layout shell ---------- */
+  .wrap{
+    max-width:1160px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+  @media (max-width:640px){ .wrap{padding:0 20px;} }
+
+  /* ---------- Stepper rail (signature element) ---------- */
+  .rail{
+    position:fixed;
+    left:32px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:50;
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .rail-step{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px 0;
+    cursor:pointer;
+    opacity:0.45;
+    transition:opacity .3s ease;
+  }
+  .rail-step.active{opacity:1;}
+  .rail-dot{
+    width:9px; height:9px;
+    border-radius:50%;
+    background:var(--slate);
+    border:2px solid transparent;
+    transition:all .3s ease;
+    flex-shrink:0;
+  }
+  .rail-step.active .rail-dot{
+    background:var(--teal);
+    box-shadow:0 0 0 4px var(--teal-dim);
+  }
+  .rail-line{
+    width:1px;
+    height:28px;
+    background:var(--line);
+    margin-left:4px;
+  }
+  .rail-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink);
+    white-space:nowrap;
+    opacity:0;
+    transform:translateX(-6px);
+    transition:all .25s ease;
+  }
+  .rail-step.active .rail-label, .rail-step:hover .rail-label{
+    opacity:1;
+    transform:translateX(0);
+  }
+  @media (max-width:960px){ .rail{display:none;} }
+
+  /* ---------- Nav ---------- */
+  .topnav{
+    position:sticky; top:0; z-index:40;
+    background:rgba(247,248,246,0.88);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .topnav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:64px;
+  }
+  .brand{font-weight:600; font-size:15px;}
+  .topnav-links{display:flex; gap:28px; font-size:14px;}
+  .topnav-links a{opacity:0.7; transition:opacity .2s;}
+  .topnav-links a:hover{opacity:1;}
+  @media (max-width:640px){ .topnav-links{gap:16px; font-size:13px;} }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:120px 0 100px;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--teal);
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    margin-bottom:20px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:22px; height:1px;
+    background:var(--teal);
+  }
+  .hero h1{
+    font-size:clamp(36px, 6vw, 64px);
+    line-height:1.05;
+    max-width:820px;
+  }
+  .hero .sub{
+    margin-top:24px;
+    font-size:18px;
+    color:var(--slate);
+    max-width:560px;
+  }
+  .hero-meta{
+    display:flex;
+    gap:40px;
+    margin-top:56px;
+    flex-wrap:wrap;
+  }
+  .hero-meta div{font-size:13px; color:var(--slate);}
+  .hero-meta strong{
+    display:block; font-family:'Space Grotesk'; font-size:15px; color:var(--ink); margin-bottom:4px; font-weight:600;
+  }
+
+  /* ---------- Section scaffolding ---------- */
+  section{padding:96px 0;}
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:48px;
+    border-bottom:1px solid var(--line);
+    padding-bottom:24px;
+    gap:24px;
+  }
+  .section-head h2{font-size:28px;}
+  .section-head .count{font-family:'IBM Plex Mono'; font-size:13px; color:var(--slate);}
+
+  /* ---------- Case study ---------- */
+  .case{
+    padding:64px 0;
+    border-bottom:1px solid var(--line);
+    scroll-margin-top:100px;
+  }
+  .case:last-child{border-bottom:none;}
+  .case-num{
+    font-family:'IBM Plex Mono';
+    font-size:13px;
+    color:var(--teal);
+    margin-bottom:14px;
+  }
+  .case h3{font-size:30px; max-width:640px; margin-bottom:20px;}
+  .case-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+    margin-top:32px;
+  }
+  @media (max-width:800px){ .case-grid{grid-template-columns:1fr;} }
+  .case-block h4{
+    font-family:'IBM Plex Mono';
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--slate);
+    margin-bottom:10px;
+  }
+  .case-block p{font-size:15px; color:var(--ink);}
+  .case-block ul{list-style:none; margin-top:4px;}
+  .case-block li{
+    font-size:15px;
+    padding-left:18px;
+    position:relative;
+    margin-bottom:6px;
+  }
+  .case-block li::before{
+    content:"→";
+    position:absolute; left:0; color:var(--teal);
+  }
+  .case-images{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-top:40px;
+  }
+  .case-images.two{grid-template-columns:repeat(2,1fr);}
+  .case-images.four{grid-template-columns:repeat(2,1fr);}
+  .case-images img{
+    border-radius:6px;
+    border:1px solid var(--line);
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    aspect-ratio:4/3;
+  }
+  @media (max-width:640px){
+    .case-images, .case-images.two, .case-images.four{grid-template-columns:1fr 1fr;}
+  }
+
+  /* ---------- Innersejuk closer (tonal flip) ---------- */
+  .closer{
+    background:var(--black);
+    color:#EDE7D3;
+    padding:110px 0;
+  }
+  .closer .eyebrow{color:var(--gold);}
+  .closer .eyebrow::before{background:var(--gold);}
+  .closer h2{
+    font-size:clamp(30px,4.5vw,44px);
+    max-width:680px;
+    color:#F5F0DE;
+  }
+  .closer .sub{color:#B8AF93; max-width:600px; margin-top:20px; font-size:16px;}
+  .closer .case-block h4{color:#8A8060;}
+  .closer .case-block p, .closer .case-block li{color:#D8D2BC;}
+  .closer .case-block li::before{color:var(--gold);}
+  .closer .case-images img{border-color:#2A2510;}
+  .closer .case-num{color:var(--gold);}
+
+  /* ---------- About / Resume ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:56px;
+  }
+  @media (max-width:700px){ .about-grid{grid-template-columns:1fr;} }
+  .about-grid img{border-radius:12px; border:1px solid var(--line);}
+  .role-list{margin-top:28px;}
+  .role{
+    display:flex; justify-content:space-between; padding:16px 0; border-top:1px solid var(--line); gap:20px;
+  }
+  .role:last-child{border-bottom:1px solid var(--line);}
+  .role-left strong{font-family:'Space Grotesk'; font-weight:600; display:block;}
+  .role-left span{font-size:13px; color:var(--slate);}
+  .role-right{
+    font-family:'IBM Plex Mono'; font-size:12px; color:var(--slate); white-space:nowrap; padding-top:2px;
+  }
+  .cert-row{display:flex; gap:40px; margin-top:36px; flex-wrap:wrap;}
+  .cert-row div strong{display:block; font-family:'Space Grotesk'; font-weight:600; font-size:14px;}
+  .cert-row div span{font-size:13px; color:var(--slate);}
+
+  /* ---------- Contact / footer ---------- */
+  .contact{
+    background:var(--ink);
+    color:var(--paper);
+    padding:100px 0 60px;
+  }
+  .contact h2{font-size:clamp(30px,5vw,48px); max-width:600px;}
+  .contact .sub{color:#9AA1AC; margin-top:18px; max-width:480px;}
+  .contact-links{
+    display:flex; gap:16px; margin-top:44px; flex-wrap:wrap;
+  }
+  .contact-links a{
+    border:1px solid #333B47;
+    padding:14px 22px;
+    border-radius:8px;
+    font-size:14px;
+    display:inline-flex; align-items:center; gap:8px;
+    transition:all .2s;
+  }
+  .contact-links a:hover{border-color:var(--teal); color:var(--teal);}
+  .foot-note{
+    margin-top:80px;
+    padding-top:24px;
+    border-top:1px solid #262D38;
+    font-size:12px;
+    color:#6B7280;
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--ink);
+    color:var(--paper);
+    padding:14px 24px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:500;
+    margin-top:36px;
+    transition:opacity .2s;
+  }
+  .btn:hover{opacity:0.85;}
+</style>
+</head>
+<body>
+
+<!-- Signature stepper rail -->
+<nav class="rail" id="rail"></nav>
+
+<header class="topnav">
+  <div class="wrap">
+    <div class="brand mono">FAHIZUDIN</div>
+    <div class="topnav-links">
+      <a href="#work">Work</a>
+      <a href="#faith">Innersejuk</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="eyebrow">UI/UX DESIGNER · KUALA LUMPUR</div>
+    <h1>Building clarity into<br>complex B2B systems.</h1>
+    <p class="sub">I design the accounting and invoicing software that businesses run on — turning dense compliance requirements and multi-stakeholder edge cases into interfaces people can actually use.</p>
+    <div class="hero-meta">
+      <div><strong>3 yrs</strong>Product UX, sole contributor</div>
+      <div><strong>Financio / ABSS</strong>Accounting SaaS, MY &amp; SG</div>
+      <div><strong>LHDN · InvoiceNow</strong>Regulatory compliance UX</div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Selected work</h2>
+      <div class="count mono">05 CASE STUDIES</div>
+    </div>
+  </div>
+
+  <!-- CASE 1: Hover -->
+  <article class="case" id="case-hover">
+    <div class="wrap">
+      <div class="case-num">CASE 01 / FINANCIO</div>
+      <h3>From hidden hover to actionable status.</h3>
+      <div class="case-grid">
+        <div class="case-block">
+          <h4>Problem</h4>
+          <p>The e-invoice status lived behind a hover pop-up — low visibility, no clarity, and no path to resolve an issue when something went wrong.</p>
+        </div>
+        <div class="case-block">
+          <h4>Approach</h4>
+          <p>Mapped user behaviour around the status check to find where confusion and support dependency were coming from, then focused the redesign on visibility and actionability.</p>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="case-block">
+          <h4>Solution</h4>
+          <p>Replaced the hover with a modal built around a stepper — clear stage indicators including "In Progress," integrated error messaging, and the redundant QR code removed.</p>
+        </div>
+        <div class="case-block">
+          <h4>Impact</h4>
+          <ul>
+            <li>Status became visible without guesswork</li>
+            <li>Fewer support escalations for "is this invoice valid?"</li>
+            <li>Errors are now actionable, not just visible</li>
+          </ul>
+        </div>
+      </div>
+      <div class="case-images">
+        <img src="assets/hover-1.jpg" alt="Before: e-invoice hover pop-up">
+        <img src="assets/hover-2.jpg" alt="Stepper component reference">
+        <img src="assets/hover-3.jpg" alt="After: LHDN status modal with stepper">
+      </div>
+    </div>
+  </article>
+
+  <!-- CASE 2: RinggitPay -->
+  <article class="case" id="case-ringgitpay">
+    <div class="wrap">
+      <div class="case-num">CASE 02 / FINANCIO</div>
+      <h3>RinggitPay × Financio integration.</h3>
+      <div class="case-grid">
+        <div class="case-block">
+          <h4>Problem</h4>
+          <p>Initial scope covered only the invoice screen, on the assumption that payment happens at invoice level — a framing that risked breaking the experience everywhere else it touched.</p>
+        </div>
+        <div class="case-block">
+          <h4>Approach</h4>
+          <p>Ran an impact analysis with the RinggitPay team and traced the integration across the product, surfacing seven affected areas instead of one.</p>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="case-block">
+          <h4>Solution</h4>
+          <p>Designed end-to-end flows and prototypes for every touchpoint — invoice, notifications, contacts, integration settings, account module, payment receipts, and Financio Connect — validated with developers and QA before sign-off.</p>
+        </div>
+        <div class="case-block">
+          <h4>Impact</h4>
+          <ul>
+            <li>One coherent payment experience, not seven patched-together screens</li>
+            <li>No rework after dev handoff — gaps were caught pre-build</li>
+            <li>Set the pattern the team now uses for scoping integrations</li>
+          </ul>
+        </div>
+      </div>
+      <div class="case-images">
+        <img src="assets/ringgitpay-1.jpg" alt="RinggitPay impact analysis across modules">
+        <img src="assets/ringgitpay-2.jpg" alt="RinggitPay QR payment flow">
+        <img src="assets/ringgitpay-3.jpg" alt="RinggitPay payment receipt and share link">
+      </div>
+    </div>
+  </article>
+
+  <!-- CASE 3: InvoiceNow -->
+  <article class="case" id="case-invoicenow">
+    <div class="wrap">
+      <div class="case-num">CASE 03 / FINANCIO — SINGAPORE</div>
+      <h3>Simplifying advanced ordering for InvoiceNow (IMDA).</h3>
+      <div class="case-grid">
+        <div class="case-block">
+          <h4>Problem</h4>
+          <p>Managing order changes — cancellations, edits, balance updates — was fragmented across Singapore's InvoiceNow network, raising both confusion and error risk.</p>
+        </div>
+        <div class="case-block">
+          <h4>Approach</h4>
+          <p>Researched real PO workflows to find the pain points, then worked with product, BA and dev to keep the fix aligned with backend constraints.</p>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="case-block">
+          <h4>Solution</h4>
+          <p>A single "golden feature" that consolidates cancellations, adjustments, and edits into one interface — delivered through wireframes and iterative validation.</p>
+        </div>
+        <div class="case-block">
+          <h4>Impact</h4>
+          <ul>
+            <li>Order changes live in one place instead of scattered flows</li>
+            <li>Lower error rate on balance and cancellation edits</li>
+            <li>UX shaped by, not fighting, technical feasibility</li>
+          </ul>
+        </div>
+      </div>
+      <div class="case-images two">
+        <img src="assets/invoicenow-1.jpg" alt="InvoiceNow order response modal">
+        <img src="assets/invoicenow-2.jpg" alt="Financio dashboard with InvoiceNow compliance banner">
+      </div>
+    </div>
+  </article>
+
+  <!-- CASE 4: LHDN Mobile -->
+  <article class="case" id="case-lhdn">
+    <div class="wrap">
+      <div class="case-num">CASE 04 / FINANCIO MOBILE</div>
+      <h3>Bringing LHDN e-invoicing to mobile.</h3>
+      <div class="case-grid">
+        <div class="case-block">
+          <h4>Problem</h4>
+          <p>E-invoice submission was desktop-only, which cut off anyone needing to invoice while out in the field.</p>
+        </div>
+        <div class="case-block">
+          <h4>Approach</h4>
+          <p>Worked with developers to test technical feasibility and pinned down which LHDN fields were actually mandatory, so the existing system stayed untouched.</p>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="case-block">
+          <h4>Solution</h4>
+          <p>A standalone mobile submission flow carrying only the essential fields — fast enough for on-the-go invoicing without a parallel system to maintain.</p>
+        </div>
+        <div class="case-block">
+          <h4>Impact</h4>
+          <ul>
+            <li>Invoicing no longer tied to a desk</li>
+            <li>Faster submission with a reduced field set</li>
+            <li>Shipped without disrupting the existing web flow</li>
+          </ul>
+        </div>
+      </div>
+      <div class="case-images four">
+        <img src="assets/lhdnmobile-1.jpg" alt="Mobile LHDN status QR view">
+        <img src="assets/lhdnmobile-2.jpg" alt="Mobile new invoice options">
+        <img src="assets/lhdnmobile-3.jpg" alt="Mobile request to cancel invoice">
+        <img src="assets/lhdnmobile-4.jpg" alt="Mobile LHDN status with cancellation flow">
+      </div>
+    </div>
+  </article>
+
+  <!-- CASE 5: ABSS download -->
+  <article class="case" id="case-abss">
+    <div class="wrap">
+      <div class="case-num">CASE 05 / ABSS</div>
+      <h3>Elevating the download experience for ABSS.</h3>
+      <div class="case-grid">
+        <div class="case-block">
+          <h4>Problem</h4>
+          <p>After purchase, users landed on a bare SharePoint link — a jarring disconnect from a paid, premium product.</p>
+        </div>
+        <div class="case-block">
+          <h4>Approach</h4>
+          <p>Researched where the trust gap came from and benchmarked app-store-style download experiences as a reference point.</p>
+        </div>
+      </div>
+      <div class="case-grid">
+        <div class="case-block">
+          <h4>Solution</h4>
+          <p>An app-store-inspired download page with product detail, feature highlights, and a guided flow from purchase to install.</p>
+        </div>
+        <div class="case-block">
+          <h4>Impact</h4>
+          <ul>
+            <li>Download now feels like part of the product, not an afterthought</li>
+            <li>Less hesitation and fewer "did my purchase go through?" queries</li>
+            <li>Consistent premium feel across the purchase-to-install journey</li>
+          </ul>
+        </div>
+      </div>
+      <div class="case-images">
+        <img src="assets/absdownload-1.jpg" alt="ABSS download landing page">
+        <img src="assets/absdownload-2.jpg" alt="ABSS product detail modal">
+        <img src="assets/absdownload-3.jpg" alt="ABSS Accounting Connect product page">
+      </div>
+    </div>
+  </article>
+</section>
+
+<!-- INNERSEJUK CLOSER — intentional tonal shift -->
+<section class="closer" id="faith">
+  <div class="wrap">
+    <div class="eyebrow">PERSONAL PROJECT · UNCONSTRAINED</div>
+    <h2>And when there's no backend constraint to design around —</h2>
+    <p class="sub">Innersejuk: an all-in-one Islamic lifestyle app, designed the way I'd design if craft came before compliance.</p>
+
+    <div class="case-grid" style="margin-top:56px;">
+      <div class="case-block">
+        <h4>Problem</h4>
+        <p>Prayer times, Qur'an reading, Qiblat direction, and donation each lived in a different app — a fragmented daily ritual.</p>
+      </div>
+      <div class="case-block">
+        <h4>Solution</h4>
+        <p>One cohesive flow combining prayer, Qur'an, Qiblat compass, donation, fitness and e-commerce — built around a premium black-and-gold direction meant to feel calm rather than busy.</p>
+      </div>
+    </div>
+
+    <div class="case-images" style="margin-top:40px;">
+      <img src="assets/innersejuk-1.jpg" alt="Innersejuk Qiblat compass and prayer tracker">
+      <img src="assets/innersejuk-2.jpg" alt="Innersejuk analytics and feature list">
+      <img src="assets/innersejuk-3.jpg" alt="Innersejuk login screen">
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>About</h2>
+      <div class="count mono">RESUME</div>
+    </div>
+    <div class="about-grid">
+      <img src="assets/profile.png" alt="Muhammad Fahizudin">
+      <div>
+        <p style="font-size:16px; max-width:600px;">UI/UX designer with three years designing customer-facing B2B accounting software — sole contributor across UX, workflow definition and UI, working close to Business Analysts and engineers to turn requirements into usable, shippable design.</p>
+
+        <div class="role-list">
+          <div class="role">
+            <div class="role-left"><strong>Asian Business Software Solutions</strong><span>UI/UX Designer</span></div>
+            <div class="role-right">SEPT 2023 — PRESENT</div>
+          </div>
+          <div class="role">
+            <div class="role-left"><strong>Keeklr</strong><span>Freelance UI/UX Designer</span></div>
+            <div class="role-right">DEC 2023 — MAY 2024</div>
+          </div>
+          <div class="role">
+            <div class="role-left"><strong>Lekir Tech</strong><span>UI/UX Designer</span></div>
+            <div class="role-right">MAR 2022 — AUG 2023</div>
+          </div>
+        </div>
+
+        <div class="cert-row">
+          <div><strong>Scrum.org</strong><span>Professional Scrum with UX</span></div>
+          <div><strong>Great Learning Academy</strong><span>UI/UX for Beginners</span></div>
+          <div><strong>Coursera / Google</strong><span>Foundations of UX Design</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="eyebrow" style="color:var(--teal);">GET IN TOUCH</div>
+    <h2>Let's talk about your product.</h2>
+    <p class="sub">Open to UI/UX roles across product design, design systems, and B2B software.</p>
+    <div class="contact-links">
+      <a href="mailto:mfahizudin@gmail.com">mfahizudin@gmail.com</a>
+      <a href="http://tiny.cc/FahizudinUX" target="_blank" rel="noopener">Full portfolio PDF ↗</a>
+    </div>
+    <div class="foot-note">
+      <span>© 2026 Muhammad Fahizudin</span>
+      <span>Kuala Lumpur, Malaysia</span>
+    </div>
+  </div>
+</section>
+
+<script>
+  const steps = [
+    {id:'case-hover', label:'Hover → Status'},
+    {id:'case-ringgitpay', label:'RinggitPay'},
+    {id:'case-invoicenow', label:'InvoiceNow'},
+    {id:'case-lhdn', label:'LHDN Mobile'},
+    {id:'case-abss', label:'ABSS Download'},
+    {id:'faith', label:'Innersejuk'},
+  ];
+  const rail = document.getElementById('rail');
+  steps.forEach((s, i) => {
+    const el = document.createElement('div');
+    el.className = 'rail-step';
+    el.dataset.target = s.id;
+    el.innerHTML = `<div class="rail-dot"></div><div class="rail-label mono">${s.label}</div>`;
+    el.addEventListener('click', () => {
+      document.getElementById(s.id).scrollIntoView({behavior:'smooth', block:'start'});
+    });
+    rail.appendChild(el);
+    if(i < steps.length - 1){
+      const line = document.createElement('div');
+      line.className = 'rail-line';
+      rail.appendChild(line);
+    }
+  });
+
+  const stepEls = rail.querySelectorAll('.rail-step');
+  const sections = steps.map(s => document.getElementById(s.id));
+
+  function onScroll(){
+    let activeIdx = 0;
+    const scrollPos = window.scrollY + window.innerHeight * 0.4;
+    sections.forEach((sec, i) => {
+      if(sec && sec.offsetTop <= scrollPos) activeIdx = i;
+    });
+    stepEls.forEach((el, i) => el.classList.toggle('active', i === activeIdx));
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+</script>
+
+</body>
+</html>
